@@ -10,3 +10,7 @@ Thumbs.db
 
 # Logs
 *.log
+
+# IDE settings
+.vscode/
+.idea/
