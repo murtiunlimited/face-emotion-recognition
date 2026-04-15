@@ -25,3 +25,7 @@ jobs:
     - name: Basic check
       run: |
         echo "Build successful"
+
+    - name: Build Docker image
+      run: |
+        docker build -t fer-project .
