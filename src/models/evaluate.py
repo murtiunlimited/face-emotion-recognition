@@ -23,6 +23,7 @@ def evaluate_model(model_path="models/final_emotion_model.keras"):
     setup_mlflow("FER-Emotion-Recognition")
 
     with mlflow.start_run(run_name="evaluation"):
+    
     # -------------------------
     # Preprocessing
     # -------------------------
@@ -56,8 +57,20 @@ def evaluate_model(model_path="models/final_emotion_model.keras"):
 
     for images, labels in val_ds:
         preds = model.predict(images, verbose=0)
+        
         y_true.extend(tf.argmax(labels, axis=1).numpy())
         y_pred.extend(tf.argmax(preds, axis=1).numpy())
+  
+    # -------------------------
+    # Metrics
+    # -------------------------
+    acc = accuracy_score(y_true, y_pred)
+    report = classification_report(
+        y_true,
+        y_pred,
+        target_names=CLASS_NAMES,
+        output_dict=True
+    )
 
     # -------------------------
     # Report
