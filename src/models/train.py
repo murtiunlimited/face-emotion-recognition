@@ -123,10 +123,15 @@ def train_model():
     })
 
     # -------------------------
-    # Save final model
+    # Save models
     # -------------------------
-    model.save("models/final_emotion_model.keras")
-    print("✅ Training complete. Model saved as models/final_emotion_model.keras")
+    model.save("models_artifacts/final_emotion_model.keras")
+
+    # Log model to MLflow
+    mlflow.keras.log_model(model, "emotion_model")
+    
+    print("✅ Training complete + MLflow logging done")
+
 
 if __name__ == "__main__":
-    train_model()  
+    train_model()
