@@ -8,12 +8,14 @@ from src.models.model import build_light_model
 from src.utils.mlflow_config import setup_mlflow
 
 def train_model():
+    
     # -------------------------
     # MLflow Setup
     # -------------------------
     setup_mlflow("FER-Emotion-Recognition")
 
     with mlflow.start_run():
+        
     # -------------------------
     # Config
     # -------------------------
@@ -25,6 +27,15 @@ def train_model():
     BATCH_SIZE = 32
     EPOCHS = 50
     CLASS_NAMES = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
+
+    # Log params
+    mlflow.log_params({
+        "img_size": IMG_SIZE,
+        "batch_size": BATCH_SIZE,
+        "epochs": EPOCHS,
+        "model": "light_cnn",
+        "classes": len(CLASS_NAMES)
+    })
 
     # -------------------------
     # Preprocessing
