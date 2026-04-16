@@ -6,6 +6,12 @@ from src.models.model import build_light_model
 
 def train_model():
     # -------------------------
+    # MLflow Setup
+    # -------------------------
+    setup_mlflow("FER-Emotion-Recognition")
+
+    with mlflow.start_run():
+    # -------------------------
     # Config
     # -------------------------
     BASE_DIR = "data/processed"
