@@ -1,6 +1,7 @@
 # src/models/evaluate.py
 import os
 import tensorflow as tf
+import mlflow
 from sklearn.metrics import classification_report
 from src.utils.mlflow_config import setup_mlflow
 import mlflow
@@ -13,7 +14,15 @@ IMG_SIZE = (48, 48)
 BATCH_SIZE = 32
 CLASS_NAMES = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
 
+
 def evaluate_model(model_path="models/final_emotion_model.keras"):
+        
+    # -------------------------
+    # MLflow Setup
+    # -------------------------
+    setup_mlflow("FER-Emotion-Recognition")
+
+    with mlflow.start_run(run_name="evaluation"):
     # -------------------------
     # Preprocessing
     # -------------------------
