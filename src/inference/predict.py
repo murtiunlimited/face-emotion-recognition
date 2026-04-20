@@ -7,7 +7,7 @@ import tensorflow as tf
 # =========================
 # Config
 # =========================
-MODEL_PATH = os.path.join("models/final_emotion_model.keras")
+MODEL_PATH = os.path.join("models_artifacts/final_emotion_model.keras")
 IMG_SIZE = (48, 48)
 CLASS_NAMES = ['Angry','Disgust','Fear','Happy','Sad','Surprise','Neutral']
 
