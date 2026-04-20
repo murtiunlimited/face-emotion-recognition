@@ -1,4 +1,4 @@
-tensorflow
+tensorflow==2.21.0
 pandas
 opencv-python
 numpy
