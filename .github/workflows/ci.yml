@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: CI Tests Only
 
 on:
   push:
@@ -6,9 +6,9 @@ on:
   pull_request:
 
 jobs:
-  build-and-push:
+  test:
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -26,20 +26,4 @@ jobs:
     - name: Run tests
       run: |
         export PYTHONPATH=.
-        pytest
-
-    - name: Build Docker image
-      run: |
-        docker build -t fer-project .
-
-    - name: Login to Docker Hub
-      run: |
-        echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
-    - name: Tag Docker image
-      run: |
-        docker tag fer-project ${{ secrets.DOCKER_USERNAME }}/fer-project:latest
-
-    - name: Push Docker image
-      run: |
-        docker push ${{ secrets.DOCKER_USERNAME }}/fer-project:latest
+        pytest -q
