@@ -24,6 +24,7 @@ jobs:
         pip install -r requirements.txt
         pip install pytest httpx
 
+    # 🔥 THIS IS THE ONLY IMPORTANT FIX
     - name: Set PYTHONPATH
       run: echo "PYTHONPATH=src:." >> $GITHUB_ENV
 
