@@ -8,7 +8,7 @@ import os
 BASE_DIR = "data/processed"
 RAW_DIR = "data/raw"                  # original raw images
 RAW_SPLIT_DIR = "data/raw_split"
-MODEL_DIR = "models" 
+MODEL_DIR = "models_artifacts" 
 
 
 TRAIN_DIR = os.path.join(BASE_DIR, "train")
