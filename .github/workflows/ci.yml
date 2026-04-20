@@ -22,7 +22,10 @@ jobs:
       run: |
         pip install --upgrade pip
         pip install -r requirements.txt
-        pip install pytest
+        pip install pytest httpx
+
+    - name: Set PYTHONPATH
+      run: echo "PYTHONPATH=src:." >> $GITHUB_ENV
 
     - name: Run tests
       run: |
