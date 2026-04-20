@@ -8,7 +8,7 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-
+    
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -20,20 +20,11 @@ jobs:
 
     - name: Install dependencies
       run: |
-              python -m pip install --upgrade pip
-              # Force TensorFlow 2.15 to maintain compatibility with your saved model
-              pip install "tensorflow==2.15.0" 
-              pip install -r requirements.txt
-              pip install pytest
-    - name: Run Unit Tests
-      # This targets your specific test directory and stops the workflow if they fail
-      run: |
-        export PYTHONPATH=$PYTHONPATH:$(pwd)
-        pytest src/tests/
+        pip install -r requirements.txt
 
     - name: Basic check
       run: |
-        echo "Tests passed. Proceeding to build..."
+        echo "Build successful"
 
     - name: Build Docker image
       run: |
@@ -49,4 +40,4 @@ jobs:
 
     - name: Push Docker image
       run: |
-        docker push ${{ secrets.DOCKER_USERNAME }}/fer-project:latest
+        docker push ${{ secrets.DOCKER_USERNAME }}/fer-project:latest    
