@@ -24,3 +24,6 @@ def test_model_shapes():
 
     # Input should be (None, H, W, C)
     assert len(model.input_shape) == 4
+    
+    # Output should match number of classes
+    assert model.output_shape[-1] == len(CLASS_NAMES)
