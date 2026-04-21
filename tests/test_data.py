@@ -103,3 +103,19 @@ def test_preprocess_runs(tmp_path):
         )
     except Exception as e:
         pytest.fail(f"Preprocessing failed: {e}")
+
+# =========================
+# Processed output structure
+# =========================
+def test_processed_output_created(tmp_path):
+    if not os.path.exists(RAW_TRAIN_DIR):
+        pytest.skip("Raw data not available")
+
+    output_dir = tmp_path / "processed"
+
+    preprocess_and_save(
+        input_dir=RAW_TRAIN_DIR,
+        output_dir=str(output_dir)
+    )
+
+    assert os.path.exists(output_dir)
