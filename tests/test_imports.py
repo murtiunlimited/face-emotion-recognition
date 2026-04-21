@@ -44,7 +44,8 @@ def test_project_imports():
     from src.inference.predict import predict_emotion
     from src.utils.mlflow_config import setup_mlflow
     from src.models.model import build_light_model
-    #from src.models.train import train_model
+    #THIS LINE BELOW DOESNT WORK
+    from src.models.train import train_model
     from src.models.evaluate import evaluate_model
     from src.data.preprocess import preprocess_and_save
 
@@ -52,6 +53,7 @@ def test_project_imports():
     assert callable(predict_emotion)
     assert callable(setup_mlflow)
     assert callable(build_light_model)
-    #assert callable(train_model)
+    #THIS LIEN BELOW DOESNT WORK
+    assert callable(train_model)
     assert callable(evaluate_model)
     assert callable(preprocess_and_save)
