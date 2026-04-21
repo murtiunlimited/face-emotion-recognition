@@ -38,3 +38,17 @@ def test_forward_pass_single():
     y = model(x)
 
     assert y.shape == (1, len(CLASS_NAMES))
+
+
+# =========================
+# Forward pass (batch)
+# =========================
+def test_forward_pass_batch():
+    model = build_light_model()
+
+    batch_size = 4
+    x = np.random.rand(batch_size, IMG_SIZE, IMG_SIZE, 1).astype("float32")
+
+    y = model(x)
+
+    assert y.shape == (batch_size, len(CLASS_NAMES))
