@@ -37,15 +37,8 @@ def test_ml_stack_imports():
     assert tqdm is not None
 
 def test_project_imports():
-    # from api.app import app
-    # from src.inference.predict import predict_emotion
-    # from src.utils.mlflow_config import setup_mlflow
-    # from src.models.model import build_light_model
+
     from src.models.train import train_model
 
-    # assert app is not None
-    # assert callable(predict_emotion)
-    # assert callable(setup_mlflow)
-    # assert callable(build_light_model)
     assert callable(train_model)
   
