@@ -9,7 +9,7 @@ if [ ! -d "venv" ]; then
     echo "Creating virtual environment..."
     python -m venv venv
 else
-    echo "Virtual environment already exists, skipping..."
+    echo "Virtual environment already exists, we are skipping..."
 fi
 
 # 2. Activate virtual environment
