@@ -86,3 +86,23 @@ def test_prediction_is_valid_class(monkeypatch):
     result = predict_emotion(img)
 
     assert result in CLASS_NAMES
+
+# =========================
+# Deterministic behavior (same input -> same output)
+# =========================
+def test_prediction_deterministic(monkeypatch):
+    class FakeModel:
+        def predict(self, x, verbose=0):
+            out = np.zeros((1, len(CLASS_NAMES)))
+            out[0][6] = 1.0
+            return out
+
+    monkeypatch.setattr("src.inference.predict.get_model", lambda: FakeModel())
+
+    img = create_dummy_face()
+
+    r1 = predict_emotion(img)
+    r2 = predict_emotion(img)
+
+    assert r1 == r2
+    assert r1 == "Neutral"
