@@ -16,3 +16,9 @@ def test_get_model_lazy_loading(monkeypatch):
 
     # reset state
     p.model = None
+
+    def fake_load(_):
+        class FakeModel:
+            def predict(self, x, verbose=0):
+                return np.array([[0.1] * len(CLASS_NAMES)])
+        return FakeModel()
