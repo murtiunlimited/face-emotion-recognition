@@ -1,3 +1,17 @@
+# tests/test_inference.py
+
+import numpy as np
+import pytest
+import cv2
+
+from src.inference.predict import (
+    predict_emotion,
+    preprocess_face,
+    get_model,
+    IMG_SIZE,
+    CLASS_NAMES
+)
+
 # =========================
 # Helper
 # =========================
