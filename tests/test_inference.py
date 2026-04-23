@@ -130,3 +130,17 @@ def test_preprocess_integrated_with_model(monkeypatch):
 
     assert captured_shape["shape"] == (1, 48, 48, 1)
     assert result == "Fear"
+
+
+# =========================
+# Edge case: wrong input type
+# =========================
+def test_predict_invalid_input(monkeypatch):
+    class FakeModel:
+        def predict(self, x, verbose=0):
+            return np.random.rand(1, len(CLASS_NAMES))
+
+    monkeypatch.setattr("src.inference.predict.get_model", lambda: FakeModel())
+
+    with pytest.raises(Exception):
+        predict_emotion(None)
