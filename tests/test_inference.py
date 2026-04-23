@@ -106,3 +106,27 @@ def test_prediction_deterministic(monkeypatch):
 
     assert r1 == r2
     assert r1 == "Neutral"
+
+# =========================
+# Preprocess + inference integration
+# =========================
+def test_preprocess_integrated_with_model(monkeypatch):
+    """Ensures pipeline works end-to-end"""
+
+    captured_shape = {}
+
+    class FakeModel:
+        def predict(self, x, verbose=0):
+            captured_shape["shape"] = x.shape
+            out = np.zeros((1, len(CLASS_NAMES)))
+            out[0][2] = 1.0
+            return out
+
+    monkeypatch.setattr("src.inference.predict.get_model", lambda: FakeModel())
+
+    img = create_dummy_face()
+
+    result = predict_emotion(img)
+
+    assert captured_shape["shape"] == (1, 48, 48, 1)
+    assert result == "Fear"
