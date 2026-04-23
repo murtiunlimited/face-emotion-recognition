@@ -31,7 +31,7 @@ FER-PROJ-2/
 │   ├── test_api.py
 │   ├── test_data.py
 │   ├── test_imports.py
-│   ├── test_inference.py  < --- TBD
+│   ├── test_inference.py
 │   ├── test_model.py
 ├── models/
 │   ├── best_emotion_model.keras
