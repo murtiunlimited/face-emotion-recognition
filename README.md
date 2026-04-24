@@ -172,4 +172,5 @@ chmod +x shellscript.sh
 - Ensure your webcam is accessible  
 - Backend must be running before opening the frontend  
 - Model file (`final_emotion_model.keras`) must exist in model_artifacts
+- Backend will be deployed using Render and Frontend with Vercel
 ****
