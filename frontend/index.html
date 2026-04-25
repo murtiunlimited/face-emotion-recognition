@@ -1,239 +1,360 @@
-<!-- frontend/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Emotion AI Live</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotion AI | Neural Interface</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #05070a;
+            --accent-color: #00f2ff; /* Default Cyber Blue */
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.1);
+            --text-main: #e0e6ed;
+        }
 
-<style>
-    body {
-        margin: 0;
-        font-family: 'Segoe UI', Tahoma, sans-serif;
-        background: #0b0f14;
-        color: #e6e6e6;
-        text-align: center;
-    }
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 50% -20%, #1a2236 0%, transparent 50%),
+                radial-gradient(circle at 0% 100%, #0d1117 0%, transparent 30%);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+            transition: background 0.8s ease;
+        }
 
-    h1 {
-        margin-top: 20px;
-        font-weight: 600;
-        color: #ffffff;
-    }
+        /* Ambient background glow that matches detected emotion */
+        body.happy { --accent-color: #00ff88; }
+        body.sad { --accent-color: #0066ff; }
+        body.angry { --accent-color: #ff3333; }
+        body.surprised { --accent-color: #ff00ff; }
+        body.neutral { --accent-color: #00f2ff; }
 
-    .video-container {
-        position: relative;
-        display: inline-block;
-        margin-top: 20px;
-    }
+        header {
+            margin-bottom: 30px;
+            text-align: center;
+        }
 
-    video {
-        border-radius: 14px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-        filter: brightness(0.85) contrast(1.1);
-    }
+        h1 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            color: var(--accent-color);
+            margin: 0;
+            text-shadow: 0 0 15px var(--accent-color);
+            transition: color 0.5s ease;
+        }
 
-    #result {
-        margin-top: 18px;
-        font-size: 1.6rem;
-        font-weight: 600;
-        color: #ffffff;
-        min-height: 40px;
-    }
+        .main-container {
+            position: relative;
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            padding: 20px;
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
 
-    .status-bar {
-        margin-top: 10px;
-        font-size: 0.9rem;
-        color: #a0a0a0;
-    }
+        .video-wrapper {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            line-height: 0;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
 
-    .pill {
-        display: inline-block;
-        padding: 6px 12px;
-        border-radius: 999px;
-        font-size: 0.85rem;
-        margin-top: 10px;
-        background: #1a2230;
-        color: #cfd6e4;
-    }
+        video {
+            width: 640px;
+            height: 480px;
+            object-fit: cover;
+            filter: grayscale(20%) contrast(1.1);
+        }
 
-    .controls {
-        margin-top: 15px;
-    }
+        /* Scanning Line Effect */
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--accent-color);
+            box-shadow: 0 0 15px var(--accent-color);
+            opacity: 0.5;
+            animation: scan 3s linear infinite;
+            z-index: 2;
+        }
 
-    button {
-        background: #1f2937;
-        border: 1px solid #2d3a4d;
-        color: white;
-        padding: 8px 14px;
-        border-radius: 8px;
-        cursor: pointer;
-        margin: 0 5px;
-        transition: 0.2s;
-    }
+        @keyframes scan {
+            0% { top: 0%; }
+            100% { top: 100%; }
+        }
 
-    button:hover {
-        background: #2a3a52;
-    }
+        .interface-overlay {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+            pointer-events: none;
+            border: 1px solid rgba(0, 242, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--accent-color);
+            opacity: 0.7;
+        }
 
-    .glow {
-        animation: pulse 1.5s infinite;
-    }
+        .results-panel {
+            margin-top: 25px;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
 
-    @keyframes pulse {
-        0% { opacity: 1; }
-        50% { opacity: 0.6; }
-        100% { opacity: 1; }
-    }
-</style>
+        #result {
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: #fff;
+        }
+
+        .metrics {
+            text-align: right;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: #8892b0;
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 5px;
+            background: #ff3333; /* Default Offline */
+        }
+
+        .status-dot.online {
+            background: #00ff88;
+            box-shadow: 0 0 8px #00ff88;
+        }
+
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: #a0a0a0;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.3s;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        button:hover {
+            background: var(--accent-color);
+            color: #000;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 15px var(--accent-color);
+        }
+
+        button.active {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .loading-bar {
+            width: 100%;
+            height: 2px;
+            background: rgba(255,255,255,0.1);
+            margin-top: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loading-progress {
+            position: absolute;
+            height: 100%;
+            width: 30%;
+            background: var(--accent-color);
+            animation: moveProgress 2s linear infinite;
+        }
+
+        @keyframes moveProgress {
+            0% { left: -30%; }
+            100% { left: 110%; }
+        }
+    </style>
 </head>
-
 <body>
 
-<h1>Emotion AI Live</h1>
+<header>
+    <h1>Neural Emotion Processor v3.0</h1>
+</header>
 
-<div class="video-container">
-    <video id="video" width="640" height="480" autoplay muted></video>
-</div>
+<div class="main-container">
+    <div class="video-wrapper">
+        <div class="scan-line"></div>
+        <div class="interface-overlay">
+            <div style="display:flex; justify-content: space-between;">
+                <span>REC ● LIVE</span>
+                <span>ISO 400</span>
+            </div>
+            <div style="display:flex; justify-content: space-between;">
+                <span>FRAME_ANALYSIS_ACTIVE</span>
+                <span id="timestamp">00:00:00</span>
+            </div>
+        </div>
+        <video id="video" width="640" height="480" autoplay muted></video>
+    </div>
 
-<div id="result">Initializing...</div>
+    <div class="results-panel">
+        <div>
+            <div style="font-size: 0.7rem; color: var(--accent-color); text-transform: uppercase; margin-bottom: 4px;">Detected State</div>
+            <div id="result">Awaiting Input...</div>
+        </div>
+        <div class="metrics">
+            <div>LATENCY: <span id="latency">0</span>ms</div>
+            <div>STATUS: <span class="status-dot" id="dot"></span><span id="connection">OFFLINE</span></div>
+        </div>
+    </div>
+    
+    <div class="loading-bar"><div class="loading-progress"></div></div>
 
-<div class="status-bar">
-    Status: <span id="connection" class="pill">Starting</span>
-</div>
-
-<div class="controls">
-    <button onclick="setSpeed(2)">Slow (2 FPS)</button>
-    <button onclick="setSpeed(3)">Balanced (3 FPS)</button>
-    <button onclick="setSpeed(5)">Fast (5 FPS)</button>
+    <div class="controls">
+        <button onclick="setSpeed(2, this)">2 FPS</button>
+        <button class="active" onclick="setSpeed(3, this)">3 FPS</button>
+        <button onclick="setSpeed(5, this)">5 FPS</button>
+    </div>
 </div>
 
 <script>
-const video = document.getElementById('video');
-const resultDiv = document.getElementById('result');
-const connectionStatus = document.getElementById('connection');
+    const video = document.getElementById('video');
+    const resultDiv = document.getElementById('result');
+    const connectionStatus = document.getElementById('connection');
+    const statusDot = document.getElementById('dot');
+    const latencyDisplay = document.getElementById('latency');
+    const timestampDisplay = document.getElementById('timestamp');
 
-let isWaiting = false;
-let TARGET_FPS = 3;
-let INTERVAL = 1000 / TARGET_FPS;
-let lastTime = 0;
+    let isWaiting = false;
+    let TARGET_FPS = 3;
+    let INTERVAL = 1000 / TARGET_FPS;
+    let lastTime = 0;
 
-const API_BASE = "http://localhost:8000";
+    const API_BASE = "http://localhost:8000";
 
-// -------------------------
-// Backend check
-// -------------------------
-async function checkBackend() {
-    try {
-        const res = await fetch(`${API_BASE}/health`);
-        if (res.ok) {
-            connectionStatus.innerText = "Connected";
-            connectionStatus.style.background = "#1f3b2c";
-            return true;
-        }
-    } catch {
-        connectionStatus.innerText = "Offline";
-        connectionStatus.style.background = "#3b1f1f";
+
+    function updateTheme(emotion) {
+        const e = emotion.toLowerCase();
+        document.body.className = ''; // Reset
+        if (['happy', 'joy', 'smile'].some(word => e.includes(word))) document.body.classList.add('happy');
+        else if (['sad', 'depressed', 'crying'].some(word => e.includes(word))) document.body.classList.add('sad');
+        else if (['angry', 'furious'].some(word => e.includes(word))) document.body.classList.add('angry');
+        else if (['surprised', 'wow'].some(word => e.includes(word))) document.body.classList.add('surprised');
+        else document.body.classList.add('neutral');
     }
-    return false;
-}
 
-// -------------------------
-// FPS control
-// -------------------------
-function setSpeed(fps) {
-    TARGET_FPS = fps;
-    INTERVAL = 1000 / TARGET_FPS;
-    resultDiv.innerText = `Speed set to ${fps} FPS`;
-}
-
-// -------------------------
-// Capture frame
-// -------------------------
-async function captureAndSend() {
-    if (isWaiting) return;
-    isWaiting = true;
-
-    const canvas = document.createElement('canvas');
-    canvas.width = 64;
-    canvas.height = 64;
-
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(video, 0, 0, 64, 64);
-
-    canvas.toBlob(async (blob) => {
-        const formData = new FormData();
-        formData.append('file', blob, 'frame.jpg');
-
+    async function checkBackend() {
         try {
-            const response = await fetch(`${API_BASE}/predict`, {
-                method: 'POST',
-                body: formData
-            });
-
-            if (!response.ok) {
-                resultDiv.innerText = "Prediction error";
-                isWaiting = false;
-                return;
+            const res = await fetch(`${API_BASE}/health`);
+            if (res.ok) {
+                connectionStatus.innerText = "ONLINE";
+                statusDot.classList.add('online');
+                return true;
             }
-
-            const data = await response.json();
-
-            resultDiv.innerText = `Emotion: ${data.emotion}`;
-            connectionStatus.innerText = `Live (${data.latency_ms} ms)`;
-            connectionStatus.classList.add("glow");
-
-            setTimeout(() => connectionStatus.classList.remove("glow"), 500);
-
-        } catch (err) {
-            resultDiv.innerText = "Disconnected";
-            connectionStatus.innerText = "Error";
-        } finally {
-            isWaiting = false;
+        } catch {
+            connectionStatus.innerText = "OFFLINE";
+            statusDot.classList.remove('online');
         }
-    }, 'image/jpeg', 0.6);
-}
-
-// -------------------------
-// Loop
-// -------------------------
-function loop(timestamp) {
-    if (timestamp - lastTime > INTERVAL) {
-        lastTime = timestamp;
-        captureAndSend();
+        return false;
     }
-    requestAnimationFrame(loop);
-}
 
-// -------------------------
-// Start
-// -------------------------
-async function start() {
-    const ok = await checkBackend();
+    function setSpeed(fps, btn) {
+        TARGET_FPS = fps;
+        INTERVAL = 1000 / TARGET_FPS;
+        document.querySelectorAll('.controls button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    }
 
-    if (ok) {
-        resultDiv.innerText = "Running...";
+    async function captureAndSend() {
+        if (isWaiting) return;
+        isWaiting = true;
+
+        const canvas = document.createElement('canvas');
+        canvas.width = 128; // Increased resolution slightly for better AI accuracy
+        canvas.height = 128;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, 128, 128);
+
+        canvas.toBlob(async (blob) => {
+            const formData = new FormData();
+            formData.append('file', blob, 'frame.jpg');
+
+            try {
+                const start = performance.now();
+                const response = await fetch(`${API_BASE}/predict`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const end = performance.now();
+                    
+                    resultDiv.innerText = data.emotion.toUpperCase();
+                    latencyDisplay.innerText = Math.round(data.latency_ms || (end - start));
+                    updateTheme(data.emotion);
+                }
+            } catch (err) {
+                resultDiv.innerText = "LINK LOST";
+            } finally {
+                isWaiting = false;
+            }
+        }, 'image/jpeg', 0.7);
+    }
+
+    function loop(timestamp) {
+
+        const now = new Date();
+        timestampDisplay.innerText = now.toTimeString().split(' ')[0];
+
+        if (timestamp - lastTime > INTERVAL) {
+            lastTime = timestamp;
+            captureAndSend();
+        }
         requestAnimationFrame(loop);
-    } else {
-        resultDiv.innerText = "Backend not ready";
     }
-}
 
-// -------------------------
-// Camera
-// -------------------------
-navigator.mediaDevices.getUserMedia({ video: true })
-.then(stream => {
-    video.srcObject = stream;
-
-    video.onloadedmetadata = () => {
-        video.play();
-        start();
-    };
-})
-.catch(err => {
-    resultDiv.innerText = "Camera error";
-    connectionStatus.innerText = err.message;
-});
+    navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } })
+    .then(stream => {
+        video.srcObject = stream;
+        video.onloadedmetadata = async () => {
+            video.play();
+            await checkBackend();
+            requestAnimationFrame(loop);
+        };
+    })
+    .catch(err => {
+        resultDiv.innerText = "CAM ERROR";
+        console.error(err);
+    });
 </script>
 
 </body>
