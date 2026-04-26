@@ -5,6 +5,7 @@ It supports both:
 -  OpenCV (desktop webcam)
 -  Web browser (FastAPI + frontend)
 -  Web Browser Version With Shell
+-  Vercel and Render For Web Deployment
 
 ---
 
