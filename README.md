@@ -6,6 +6,7 @@ It supports both:
 -  Web browser (FastAPI + frontend)
 -  Web Browser Version With Shell
 -  Vercel and Render For Web Deployment
+-  NEVER USE GIT INIT AFTER YOUR PROJECT IS COMPLETE LOL IT DELETED EVERYTHING
 
 ---
 
