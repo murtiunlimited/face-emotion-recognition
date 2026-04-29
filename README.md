@@ -1,4 +1,4 @@
-#  Facial Emotion Recognition (FER Project)
+#  Facial Emotion Recognition (FER Project
 
 This project performs **real-time facial emotion detection** using a CNN model.  
 It supports both:
