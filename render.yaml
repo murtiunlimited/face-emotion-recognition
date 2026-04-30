@@ -1,4 +1,4 @@
-services:
+service:
   - type: web
     name: fer-proj-api
     env: python
