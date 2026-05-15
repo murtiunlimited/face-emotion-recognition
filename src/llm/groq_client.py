@@ -37,3 +37,6 @@ def explain_emotion(emotion, confidence):
         )
 
         return response.choices[0].message.content
+
+    except Exception as e:
+        return f"Groq Error: {str(e)}"
