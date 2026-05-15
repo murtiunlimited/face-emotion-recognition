@@ -59,10 +59,8 @@ async def predict(file: UploadFile = File(...)):
         # Measure latency (nice touch, no logging needed)
         start = time.time()
 
-        label = predict_emotion(img)
-
+        result = predict_emotion(img)
         duration = time.time() - start
-
         return {
             "emotion": label,
             "filename": file.filename,
