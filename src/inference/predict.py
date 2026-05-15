@@ -4,6 +4,8 @@ import cv2
 import numpy as np
 import tensorflow as tf
 
+from src.llm.groq_client import explain_emotion
+
 # =========================
 # Config
 # =========================
