@@ -11,3 +11,13 @@ client = Groq(
 )
 
 def explain_emotion(emotion, confidence):
+    prompt = f"""
+    A facial emotion recognition model predicted:
+
+    Emotion: {emotion}
+    Confidence: {confidence:.2f}
+
+    Give a short human-friendly explanation.
+    Also if the user talks about something other than emotion
+    just continute the conversation but under 40 tokens.
+    """
