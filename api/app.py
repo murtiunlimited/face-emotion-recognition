@@ -71,3 +71,9 @@ async def predict(file: UploadFile = File(...)):
 
     except Exception:
         raise HTTPException(status_code=500, detail="Prediction failed")
+
+class ChatRequest(BaseModel):
+    message: str
+
+@app.post("/chat")
+def chat(req: ChatRequest):
