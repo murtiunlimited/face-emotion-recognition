@@ -9,3 +9,5 @@ load_dotenv()
 client = Groq(
     api_key=os.getenv("GROQ_API_KEY")
 )
+
+def explain_emotion(emotion, confidence):
