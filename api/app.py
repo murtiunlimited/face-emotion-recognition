@@ -64,6 +64,7 @@ async def predict(file: UploadFile = File(...)):
         return {
             "emotion": label,
             "confidence": result["confidence"],
+            "ai_explanation": result["ai_explanation"],
             "filename": file.filename,
             "latency_ms": round(duration * 1000, 2)
         }
