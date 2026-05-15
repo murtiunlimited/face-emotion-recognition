@@ -5,6 +5,7 @@ import numpy as np
 import cv2
 import time
 from pydantic import BaseModel
+from src.llm.groq_client import explain_emotion
 
 from src.inference.predict import predict_emotion
 
