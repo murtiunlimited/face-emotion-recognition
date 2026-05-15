@@ -43,4 +43,6 @@ def predict_emotion(face_img):
     processed = preprocess_face(face_img)
     preds = model.predict(processed, verbose=0)
     class_idx = np.argmax(preds)
+    emotion = CLASS_NAMES[class_idx]
+
     return CLASS_NAMES[class_idx]
