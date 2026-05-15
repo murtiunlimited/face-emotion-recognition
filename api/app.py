@@ -84,3 +84,8 @@ def chat(req: ChatRequest):
         return {
             "reply": response
         }
+        
+    except Exception as e:
+        return {
+            "reply": f"Error: {str(e)}"
+        }
