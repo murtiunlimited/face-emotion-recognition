@@ -35,3 +35,5 @@ def explain_emotion(emotion, confidence):
             temperature=0.7,
             max_tokens=80
         )
+
+        return response.choices[0].message.content
