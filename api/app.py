@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import numpy as np
 import cv2
 import time
+from pydantic import BaseModel
 
 from src.inference.predict import predict_emotion
 
