@@ -77,3 +77,10 @@ class ChatRequest(BaseModel):
 
 @app.post("/chat")
 def chat(req: ChatRequest):
+    
+    try:
+        response = explain_emotion(req.message, 1.0)
+        
+        return {
+            "reply": response
+        }
