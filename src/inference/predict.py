@@ -45,4 +45,6 @@ def predict_emotion(face_img):
     class_idx = np.argmax(preds)
     emotion = CLASS_NAMES[class_idx]
     confidence = float(np.max(preds))
+    ai_explanation = explain_emotion(emotion, confidence)
+
     return CLASS_NAMES[class_idx]
