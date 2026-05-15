@@ -47,4 +47,8 @@ def predict_emotion(face_img):
     confidence = float(np.max(preds))
     ai_explanation = explain_emotion(emotion, confidence)
 
-    return CLASS_NAMES[class_idx]
+    return {
+        "emotion": emotion,
+        "confidence": round(confidence, 4),
+        "ai_explanation": ai_explanation
+    }
