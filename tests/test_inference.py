@@ -85,6 +85,7 @@ def test_predict_emotion(monkeypatch):
     result = predict_emotion(img)
 
     assert result["emotion"] == "Happy"
+    assert result["confidence"] == 1.0
 # =========================
 # Prediction output validity
 # =========================
