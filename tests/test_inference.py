@@ -101,7 +101,7 @@ def test_prediction_is_valid_class(monkeypatch):
 
     result = predict_emotion(img)
 
-    assert result in CLASS_NAMES
+    assert result["emotion"] in CLASS_NAMES
 
 # =========================
 # Deterministic behavior (same input -> same output)
