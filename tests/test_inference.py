@@ -125,7 +125,7 @@ def test_prediction_deterministic(monkeypatch):
 
     assert r1["emotion"] == r2["emotion"]
     assert r1["confidence"] == r2["confidence"]
-    assert r1 == "Neutral"
+    assert r1["emotion"] == "Neutral"
 
 # =========================
 # Preprocess + inference integration
