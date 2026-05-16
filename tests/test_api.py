@@ -54,7 +54,7 @@ def test_predict_success(monkeypatch):
     assert response.status_code == 200
 
     data = response.json()
-    assert data["emotion"] == "happy"
+    assert data["emotion"] == "Happy"
     assert data["filename"] == "test.jpg"
     assert "latency_ms" in data
 
