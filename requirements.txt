@@ -9,3 +9,4 @@ tqdm
 python-multipart
 mlflow
 groq
+python-dotenv
