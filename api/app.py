@@ -62,7 +62,7 @@ async def predict(file: UploadFile = File(...)):
         result = predict_emotion(img)
         duration = time.time() - start
         return {
-            "emotion": label,
+            "emotion": result["emotion"],
             "confidence": result["confidence"],
             "ai_explanation": result["ai_explanation"],
             "filename": file.filename,
