@@ -79,7 +79,10 @@ def test_predict_emotion(monkeypatch):
             return out
 
     monkeypatch.setattr("src.inference.predict.get_model", lambda: FakeModel())
-
+    monkeypatch.setattr(
+        "src.inference.predict.explain_emotion",
+        lambda emotion, confidence=None: "Mock explanation"
+    )
     img = create_dummy_face()
 
     result = predict_emotion(img)
