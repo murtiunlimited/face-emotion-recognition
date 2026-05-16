@@ -146,7 +146,7 @@ def test_preprocess_integrated_with_model(monkeypatch):
     result = predict_emotion(img)
 
     assert captured_shape["shape"] == (1, 48, 48, 1)
-    assert result == "Fear"
+    assert result["emotion"] == "Fear"
 
 
 # =========================
