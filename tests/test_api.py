@@ -34,7 +34,12 @@ def test_health():
 # =========================
 def test_predict_success(monkeypatch):
     def mock_predict(_):
-        return "happy"
+        return {
+            "emotion": "Happy",
+            "confidence": 1.0,
+            "ai_explanation": "Test explanation"
+        
+        }
 
     # Mock the model
     monkeypatch.setattr("api.app.predict_emotion", mock_predict)
