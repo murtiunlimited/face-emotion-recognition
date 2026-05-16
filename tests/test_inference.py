@@ -121,6 +121,7 @@ def test_prediction_deterministic(monkeypatch):
     r2 = predict_emotion(img)
 
     assert r1["emotion"] == r2["emotion"]
+    assert r1["confidence"] == r2["confidence"]
     assert r1 == "Neutral"
 
 # =========================
