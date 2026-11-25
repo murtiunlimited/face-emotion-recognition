@@ -20,3 +20,289 @@ body{
     align-items:center;
     min-height:100vh;
 }
+
+.container{
+    width:700px;
+    padding:30px;
+    border-radius:22px;
+    background:#111827;
+    border:1px solid rgba(255,255,255,0.08);
+}
+
+h1{
+    margin-top:0;
+}
+
+.upload-box{
+    margin-top:20px;
+    padding:30px;
+    border:2px dashed rgba(255,255,255,0.15);
+    border-radius:18px;
+    text-align:center;
+}
+
+input{
+    margin-top:20px;
+}
+
+img{
+    width:100%;
+    margin-top:20px;
+    border-radius:14px;
+}
+
+.result{
+    margin-top:25px;
+    font-size:32px;
+    font-weight:700;
+}
+
+.ai{
+    margin-top:10px;
+    color:#b6c2d1;
+    line-height:1.6;
+}
+
+/* chatbot */
+.chatbot{
+    margin-top:30px;
+    padding:20px;
+    border-radius:16px;
+    background:rgba(255,255,255,0.04);
+}
+
+.chatbot h3{
+    margin-top:0;
+}
+
+.chatbot input{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:10px;
+    background:#1f2937;
+    color:white;
+    outline:none;
+}
+
+/* send button */
+button{
+    margin-top:12px;
+    padding:12px 18px;
+    border:none;
+    border-radius:10px;
+    background:#00ffd5;
+    font-weight:700;
+    cursor:pointer;
+    width:100%;
+}
+
+button:hover{
+    opacity:0.9;
+}
+
+.status{
+    margin-top:15px;
+    color:#9ca3af;
+}
+
+#chatResponse{
+    margin-top:12px;
+    color:#b6c2d1;
+    font-size:14px;
+}
+
+/* 🔥 MODERN NAV BAR (same across all pages) */
+.nav {
+    position: fixed;
+    bottom: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    background: rgba(17, 24, 39, 0.85);
+    backdrop-filter: blur(12px);
+    padding: 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.nav a {
+    text-decoration: none;
+    color: #cbd5e1;
+    font-size: 13px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    transition: all 0.2s ease;
+}
+
+.nav a:hover {
+    background: rgba(255,255,255,0.08);
+    color: #ffffff;
+}
+
+.nav a.active {
+    background: #2ee6a6;
+    color: #0b0f17;
+    font-weight: 600;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Emotion AI Scanner</h1>
+
+    <!-- IMAGE UPLOAD -->
+    <div class="upload-box">
+
+        <p>Select an image for emotion analysis</p>
+
+        <input type="file" id="fileInput" accept="image/*">
+
+        <img id="preview" style="display:none;">
+
+        <button onclick="analyzeImage()">
+            Analyze Emotion
+        </button>
+
+        <div class="status" id="status">
+            Waiting for image...
+        </div>
+
+    </div>
+
+    <!-- RESULT -->
+    <div class="result" id="result"></div>
+
+    <div class="ai" id="ai"></div>
+
+    <!-- CHATBOT -->
+    <div class="chatbot">
+
+        <h3>AI Chatbot</h3>
+
+        <input id="chatInput"
+            type="text"
+            placeholder="Ask about the detected emotion..."
+        >
+
+        <button onclick="sendMessage()">
+            Send
+        </button>
+
+        <div id="chatResponse"></div>
+
+    </div>
+
+</div>
+
+<script>
+
+const API_BASE = "http://localhost:8000";
+
+const fileInput = document.getElementById("fileInput");
+const preview = document.getElementById("preview");
+
+/* preview image */
+fileInput.addEventListener("change", () => {
+
+    const file = fileInput.files[0];
+
+    if(file){
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = "block";
+    }
+
+});
+
+/* IMAGE EMOTION DETECTION */
+async function analyzeImage(){
+
+    const file = fileInput.files[0];
+
+    if(!file){
+        alert("Please upload an image.");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    document.getElementById("status").innerText =
+        "Analyzing image...";
+
+    try{
+
+        const res = await fetch(`${API_BASE}/predict`,{
+            method:"POST",
+            body:formData
+        });
+
+        const data = await res.json();
+
+        document.getElementById("result").innerText =
+            data.emotion.toUpperCase();
+
+        document.getElementById("ai").innerText =
+            data.ai_explanation;
+
+        document.getElementById("status").innerText =
+            "Analysis complete";
+
+    }catch(err){
+
+        document.getElementById("status").innerText =
+            "Server error";
+
+    }
+}
+
+/* CHATBOT */
+async function sendMessage(){
+
+    const input = document.getElementById("chatInput").value;
+    const output = document.getElementById("chatResponse");
+
+    if(!input){
+        output.innerText = "Type something first.";
+        return;
+    }
+
+    output.innerText = "Thinking...";
+
+    try{
+
+        const res = await fetch(`${API_BASE}/chat`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                message: input
+            })
+        });
+
+        const data = await res.json();
+
+        output.innerText = data.reply;
+
+    }catch(err){
+        output.innerText = "Server error / backend not running";
+    }
+}
+
+</script>
+
+<!-- NAVIGATION -->
+<div class="nav">
+    <a href="index.html">Home</a>
+    <a class="active" href="ai.html">Image AI</a>
+    <a href="realtime.html">Real-Time</a>
+</div>
+
+</body>
+</html>
