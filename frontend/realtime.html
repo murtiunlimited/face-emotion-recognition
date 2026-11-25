@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Real-Time Emotion Detection</title>
+
+<style>
+
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #0b0f17;
+    color: #e8eef6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* MAIN CARD */
+.card {
+    width: 520px;
+    background: #111827;
+    border-radius: 18px;
+    padding: 22px;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.title {
+    font-weight: 600;
+}
+
+.status {
+    font-size: 12px;
+    color: #9ca3af;
+    background: rgba(255,255,255,0.06);
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+video {
+    width: 100%;
+    border-radius: 14px;
+    background: black;
+}
+
+.result {
+    margin-top: 16px;
+    font-size: 34px;
+    font-weight: 700;
+}
+
+.footer {
+    margin-top: 14px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+.badge {
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: rgba(0,255,200,0.1);
+    color: #2ee6a6;
+}
+
+/* 🔥 MODERN NAV BAR */
+.nav {
+    position: fixed;
+    bottom: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    background: rgba(17, 24, 39, 0.85);
+    backdrop-filter: blur(12px);
+    padding: 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.nav a {
+    text-decoration: none;
+    color: #cbd5e1;
+    font-size: 13px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    transition: all 0.2s ease;
+}
+
+.nav a:hover {
+    background: rgba(255,255,255,0.08);
+    color: #ffffff;
+}
+
+.nav a.active {
+    background: #2ee6a6;
+    color: #0b0f17;
+    font-weight: 600;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <div class="header">
+        <div class="title">Real-Time Emotion Detection</div>
+        <div class="status" id="status">Idle</div>
+    </div>
+
+    <video id="video" autoplay muted></video>
+
+    <div class="result" id="result">WAITING</div>
+
+    <div class="footer">
+        <div>Latency: <span id="latency">0</span> ms</div>
+        <div class="badge">LIVE</div>
+    </div>
+
+</div>
+
+<script>
+
+const video = document.getElementById("video");
+const result = document.getElementById("result");
+const statusEl = document.getElementById("status");
+const latencyEl = document.getElementById("latency");
+
+const API_BASE = "http://localhost:8000";
+
+let lastFrame = 0;
+const FPS = 3;
+const INTERVAL = 1000 / FPS;
+
+let lastRequestTime = 0;
+const COOLDOWN = 15000;
+
+function setStatus(t){
+    statusEl.innerText = t;
+}
+
+async function sendFrame(){
+
+    const now = Date.now();
+
+    if(now - lastRequestTime < COOLDOWN){
+        setStatus("Cooling down...");
+        return;
+    }
+
+    setStatus("Analyzing");
+
+    const canvas = document.createElement("canvas");
+    canvas.width = 128;
+    canvas.height = 128;
+
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(video, 0, 0, 128, 128);
+
+    canvas.toBlob(async (blob)=>{
+
+        const formData = new FormData();
+        formData.append("file", blob, "frame.jpg");
+
+        try{
+
+            const start = performance.now();
+
+            const res = await fetch(`${API_BASE}/predict`, {
+                method:"POST",
+                body:formData
+            });
+
+            const data = await res.json();
+
+            const end = performance.now();
+
+            result.innerText = data.emotion.toUpperCase();
+            latencyEl.innerText = Math.round(end - start);
+
+            setStatus("Live");
+
+            lastRequestTime = Date.now();
+
+        }catch(err){
+            result.innerText = "ERROR";
+            setStatus("Offline");
+        }
+
+    }, "image/jpeg", 0.7);
+}
+
+function loop(t){
+    if(t - lastFrame > INTERVAL){
+        lastFrame = t;
+        sendFrame();
+    }
+    requestAnimationFrame(loop);
+}
+
+navigator.mediaDevices.getUserMedia({ video:true })
+.then(stream=>{
+    video.srcObject = stream;
+    video.onloadedmetadata = ()=>{
+        video.play();
+        requestAnimationFrame(loop);
+    };
+})
+.catch(()=>{
+    result.innerText = "CAM ERROR";
+    setStatus("Camera blocked");
+});
+
+</script>
+
+<!-- NAVIGATION -->
+<div class="nav">
+    <a href="index.html">Home</a>
+    <a href="ai.html">Image AI</a>
+    <a class="active" href="realtime.html">Real-Time</a>
+</div>
+
+</body>
+</html>
